@@ -8,6 +8,21 @@ spec:
   resources:
   - name: fuse-demo-github
     type: git
+  - name: output-runnable-image
+    type: image
+  params:
+    - name: artifact_id
+      type: string
+      description: The ajava artifact id that is put on nexus after a successful build
+      default: "com.redhat:fuse-demo:1.0.0-SNAPSHOT"
+    - name: nexus_url
+      type: string
+      description: URL of the Nexus Server
+      default: "nexus.apps.kubernetes.local"
+    - name: credentials
+      type: string
+      description: Credentials to use when authenticating on Nexus
+      default: "jenkins-nexus:redhat123"
   tasks:
   - name: build
     taskRef:
@@ -77,6 +92,29 @@ spec:
       value: ["deploy"]
     - name: SETTINGS_PATH
       value: "conf/settings.xml"
+    workspaces:
+    - name: maven-repo
+      workspace: spring-maven-repo
+  - name: build-runnable-image
+    taskRef:
+      name: spring-build-task
+    runAfter: ["upload-artifact"]
+    params:
+      - name: artifact_id
+        value: "$(params.artifact_id)"
+      - name: nexus_url
+        value: "$(params.nexus_url)"
+      - name: credentials
+        value: "$(params.credentials)"
+      - name: TLS_VERIFY
+        value: "false"
+    resources:
+      inputs:
+      - name: source
+        resource: fuse-demo-github
+      outputs:
+      - name: image
+        resource: output-runnable-image
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo

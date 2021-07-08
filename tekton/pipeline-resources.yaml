@@ -1,0 +1,20 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: fuse-demo-image
+spec:
+  type: image
+  params:
+  - name: url
+    value: image-registry.openshift-image-registry.svc:5000/jenkins/fuse-demo
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: fuse-demo-github-repo
+spec:
+  type: git
+  params:
+  - name: url
+    value: https://github.com/mcaimi/ocp4-tekton-demo

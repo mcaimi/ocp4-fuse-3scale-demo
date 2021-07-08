@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: spring-build-task
+spec:
+  workspaces:
+    - name: maven-repo
+  inputs:
+    resources:
+      - name: source
+        type: git
+    params:
+      - name: TLS_VERIFY
+        description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS registry)
+        default: "false"
+        type: string
+      - name: artifact_id
+        type: string
+        description: The ajava artifact id that is put on nexus after a successful build
+        default: "com.redhat:fuse-demo:1.0.0-SNAPSHOT"
+      - name: nexus_url
+        type: string
+        description: URL of the Nexus Server
+        default: "nexus.apps.kubernetes.local"
+      - name: credentials
+        type: string
+        description: Credentials to use when authenticating on Nexus
+        default: "jenkins-nexus:redhat123"
+  outputs:
+    resources:
+      - name: image
+        type: image
+  steps:
+    - name: buildah-build
+      image: quay.io/buildah/stable
+      workingdir: /workspace/source/java-runner
+      command: ['buildah', 'bud',  '--build-arg','nexus_repo_url=$(params.nexus_url)', '--build-arg', 'artifact_name=$(params.artifact_id)', '--build-arg', 'nexus_auth=$(params.credentials)', '--tls-verify=$(inputs.params.TLS_VERIFY)', '--layers', '-f', 'Dockerfile', '-t', '$(outputs.resources.image.url)', '.']
+      volumeMounts:
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
+      securityContext:
+        privileged: true
+    - name: push
+      image: quay.io/buildah/stable
+      command: ['buildah', 'push', '--tls-verify=$(inputs.params.TLS_VERIFY)', '$(outputs.resources.image.url)', 'docker://$(outputs.resources.image.url)']
+      volumeMounts:
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
+      securityContext:
+        privileged: true
+  volumes:
+    - name: varlibcontainers
+      emptyDir: {}
+

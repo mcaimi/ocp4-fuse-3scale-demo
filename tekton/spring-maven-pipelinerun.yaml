@@ -8,11 +8,18 @@ spec:
     name: spring-maven-pipeline
   resources:
   - name: fuse-demo-github
-    resourceSpec:
-      type: git
-      params:
-        - name: url
-          value: https://github.com/mcaimi/ocp4-tekton-demo
+    resourceRef:
+      name: fuse-demo-github-repo
+  - name: output-runnable-image
+    resourceRef:
+      name: fuse-demo-image
+  params:
+    - name: artifact_id
+      value: "com.redhat:fuse-demo:1.0.0-SNAPSHOT"
+    - name: nexus_url
+      value: "nexus.apps.cluster-5698.sandbox539.opentlc.com"
+    - name: credentials
+      value: "jenkins-nexus:redhat123"
   workspaces:
   - name: spring-maven-repo
     persistentVolumeClaim:
