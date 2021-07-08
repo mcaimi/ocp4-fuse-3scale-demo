@@ -23,6 +23,10 @@ spec:
       type: string
       description: Credentials to use when authenticating on Nexus
       default: "jenkins-nexus:redhat123"
+    - name: deploymentNamespace
+      type: string
+      description: Namespace where deployment will occur
+      default: "fuse-demo"
   tasks:
   - name: build
     taskRef:
@@ -118,3 +122,17 @@ spec:
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
+  - name: deploy-app
+    taskRef:
+      name: kustomize-deployment-task
+    runAfter: ["build-runnable-image"]
+    params:
+      - name: deploymentNamespace
+        value: "$(params.deploymentNamespace)"
+    resources:
+      inputs:
+        - name: source
+          resource: fuse-demo-github
+    workspaces:
+      - name: maven-repo
+        workspace: spring-maven-repo

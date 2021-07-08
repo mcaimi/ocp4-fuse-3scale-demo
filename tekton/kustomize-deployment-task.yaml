@@ -1,0 +1,37 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: kustomize-deployment-task
+spec:
+  workspaces:
+    - name: maven-repo
+  resources:
+    inputs:
+      - name: source
+        type: git
+  params:
+    - name: deploymentNamespace
+      type: string
+      description: Namespace where deployment will occur.
+      default: "fuse-demo"
+  steps:
+    - name: deploy-resources
+      resources: {}
+      command:
+        - oc
+        - replace
+        - '-k'
+        - deployments/$(params.deploymentNamespace)
+        - '--force=true'
+      image: docker.io/mcaimi/jenkins-agent-maven:jdk8
+      workingDir: /workspace/source
+    - name: display-resources
+      resources: {}
+      command:
+        - oc
+        - get
+        - all
+        - '-n'
+        - $(params.deploymentNamespace)
+      image: docker.io/mcaimi/jenkins-agent-maven:jdk8
+

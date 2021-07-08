@@ -7,7 +7,7 @@ spec:
   type: image
   params:
   - name: url
-    value: image-registry.openshift-image-registry.svc:5000/jenkins/fuse-demo
+    value: image-registry.openshift-image-registry.svc:5000/fuse-demo/fuse-demo
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource

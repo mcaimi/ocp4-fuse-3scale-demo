@@ -14,5 +14,5 @@ patchesStrategicMerge:
 - mem-sizing.yaml
 images:
 - name: fuse-demo
-  newName: image-registry.openshift-image-registry.svc:5000/dev/fuse-demo
-  newTag: dev
+  newName: image-registry.openshift-image-registry.svc:5000/fuse-demo/fuse-demo
+  newTag: latest
