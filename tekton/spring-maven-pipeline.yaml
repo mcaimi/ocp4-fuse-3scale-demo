@@ -1,0 +1,68 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: spring-maven-pipeline
+spec:
+  workspaces:
+  - name: spring-maven-repo
+  resources:
+  - name: fuse-demo-github
+    type: git
+  tasks:
+  - name: build
+    taskRef:
+      name: spring-maven-task
+    resources:
+      inputs:
+      - name: source
+        resource: fuse-demo-github
+    params:
+    - name: GOALS
+      value: ["compile"]
+    workspaces:
+    - name: maven-repo
+      workspace: spring-maven-repo
+  - name: test
+    taskRef:
+      name: spring-maven-task
+    runAfter: ["build"]
+    resources:
+      inputs:
+      - name: source
+        resource: fuse-demo-github
+    params:
+    - name: GOALS
+      value: ["verify"]
+    workspaces:
+    - name: maven-repo
+      workspace: spring-maven-repo
+  - name: package
+    taskRef:
+      name: spring-maven-task
+    runAfter: ["test"]
+    resources:
+      inputs:
+      - name: source
+        resource: fuse-demo-github
+    params:
+    - name: GOALS
+      value: ["package"]
+    workspaces:
+    - name: maven-repo
+      workspace: spring-maven-repo
+  - name: upload-artifact
+    taskRef:
+      name: spring-nexus-task
+    runAfter: ["package"]
+    resources:
+      inputs:
+      - name: source
+        resource: fuse-demo-github
+    params:
+    - name: GOALS
+      value: ["deploy"]
+    - name: SETTINGS_PATH
+      value: "conf/settings.xml"
+    workspaces:
+    - name: maven-repo
+      workspace: spring-maven-repo

@@ -1,0 +1,19 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: fuse-demo-tekton-run-
+spec:
+  pipelineRef:
+    name: spring-maven-pipeline
+  resources:
+  - name: fuse-demo-github
+    resourceSpec:
+      type: git
+      params:
+        - name: url
+          value: https://github.com/mcaimi/ocp4-tekton-demo
+  workspaces:
+  - name: spring-maven-repo
+    persistentVolumeClaim:
+      claimName: spring-maven-repo-pvc
