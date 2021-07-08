@@ -1,0 +1,18 @@
+bases:
+  - ../common
+namespace: fuse-demo
+namePrefix: spring-
+nameSuffix: "-github"
+commonLabels:
+  app: fuse-demo
+commonAnnotations:
+  deployedBy: "jenkins"
+  chain: "devops-pipeline"
+  environment: "noprod"
+patchesStrategicMerge:
+- ingress-route.yaml
+- mem-sizing.yaml
+images:
+- name: fuse-demo
+  newName: image-registry.openshift-image-registry.svc:5000/dev/fuse-demo
+  newTag: dev

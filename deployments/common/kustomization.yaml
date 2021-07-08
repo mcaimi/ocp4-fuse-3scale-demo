@@ -1,0 +1,8 @@
+resources:
+- fuse-demo-deployment.yaml
+- fuse-demo-service.yaml
+- fuse-demo-ingress.yaml
+- servicemonitor.yaml
+configurations:
+  - crds/crd.yaml
+

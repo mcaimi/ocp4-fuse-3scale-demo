@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fuse-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fuse-demo
+  template:
+    metadata:
+      labels:
+        app: fuse-demo
+    spec:
+      containers:
+      - image: fuse-demo
+        imagePullPolicy: Always
+        name: ocp-fuse-demo
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+
