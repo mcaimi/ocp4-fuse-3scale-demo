@@ -22,7 +22,7 @@ spec:
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
-  - name: test
+  - name: verify
     taskRef:
       name: spring-maven-task
     runAfter: ["build"]
@@ -36,10 +36,24 @@ spec:
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
+  - name: jacoco
+    taskRef:
+      name: spring-maven-task
+    runAfter: ["verify"]
+    resources:
+      inputs:
+      - name: source
+        resource: fuse-demo-github
+    params:
+    - name: GOALS
+      value: ["jacoco:report"]
+    workspaces:
+    - name: maven-repo
+      workspace: spring-maven-repo
   - name: package
     taskRef:
       name: spring-maven-task
-    runAfter: ["test"]
+    runAfter: ["verify"]
     resources:
       inputs:
       - name: source
@@ -53,7 +67,7 @@ spec:
   - name: upload-artifact
     taskRef:
       name: spring-nexus-task
-    runAfter: ["package"]
+    runAfter: ["package", "jacoco"]
     resources:
       inputs:
       - name: source
