@@ -55,7 +55,7 @@ spec:
         resource: fuse-demo-github
     params:
     - name: GOALS
-      value: ["verify"]
+      value: ["-Dspring.profiles.active=test","verify"]
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
