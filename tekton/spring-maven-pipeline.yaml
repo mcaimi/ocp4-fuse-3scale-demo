@@ -156,3 +156,23 @@ spec:
     workspaces:
       - name: maven-repo
         workspace: spring-maven-repo
+  - name: deploy-database
+    taskRef:
+      name: kustomize-deployment-task
+    runAfter: ["build-runnable-image"]
+    conditions:
+      - conditionRef: "postgres-already-deployed"
+        params:
+          - name: postgresLabel
+            value: "app=spring-postgres-app"
+    params:
+      - name: deploymentNamespace
+        value: "fuse-postgres"
+    resources:
+      inputs:
+        - name: source
+          resource: fuse-demo-github
+    workspaces:
+      - name: maven-repo
+        workspace: spring-maven-repo
+
