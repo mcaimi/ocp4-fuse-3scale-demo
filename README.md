@@ -44,17 +44,17 @@ $ oc new-project fuse-demo
 2. Install tekton pipeline components:
 
 ```bash
-oc create cm hadolint-config-cm --from-file=hadolint.yaml=conf/hadolint.yaml
+oc create cm hadolint-config-cm --from-file=hadolint.yaml=conf/hadolint.yaml -n fuse-demo
 
 for i in pipeline-resources spring-build-pvc hadolint-task spring-build-task kustomize-deployment-task spring-maven-task spring-nexus-tasl spring-maven-pipeline; do
-  oc create -f tekton/$i.yaml
+  oc create -f tekton/$i.yaml -n fuse-demo
 done
 ```
 
 3. Run the pipeline
 
 ```bash
-$ oc create -f tekton/spring-maven-pipelinerun.yaml
+$ oc create -f tekton/spring-maven-pipelinerun.yaml -n fuse-demo
 ```
 
 ![OCP Pipeline Run](/assets/pipeline.png)
@@ -62,7 +62,7 @@ $ oc create -f tekton/spring-maven-pipelinerun.yaml
 And wait for the deployment to show
 
 ```
-$ oc get deployment
+$ oc get deployment -n fuse-demo
 [...]
 NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
 spring-fuse-demo-github   0/1     1            0           19m
@@ -78,6 +78,41 @@ NAME                      CLASS    HOSTS                        ADDRESS   PORTS 
 spring-fuse-demo-github   <none>   fuse.apps.kubernetes.local             80      2m29s
 [...]
 ```
+
+### GitHub Triggers
+
+This repo can be setup to trigger a build on every github push, using Tekton Triggers.
+To try triggers, you need to clone this repo and update all resources to match the new repo name.
+
+1. Deploy TriggerTemplates, TriggerBindings and EventListener Custom Resources
+
+```bash
+$ oc create -f tekton/triggers.yaml -n fuse-demo
+```
+
+2. Expose the EventListener WebHook controller:
+
+```bash
+$ oc get svc -n fuse-demo
+NAME                              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+el-fuse-demo-event-listener       ClusterIP   172.30.198.191   <none>        8080/TCP            13m
+spring-fuse-demo-service-github   ClusterIP   172.30.201.196   <none>        80/TCP              96m
+spring-postgres-service-github    ClusterIP   172.30.103.193   <none>        5432/TCP,5433/TCP   148m
+```
+
+expose the service via an HTTP Route:
+
+```bash
+$ oc expose svc el-fuse-demo-event-listener -n fuse-demo
+
+$ oc get routes -n fuse-demo
+NAME                          HOST/PORT                                                                        PATH   SERVICES                      PORT            TERMINATION   WILDCARD
+el-fuse-demo-event-listener   el-fuse-demo-event-listener-fuse-demo.apps.cluster-5698.sandbox539.opentlc.com          el-fuse-demo-event-listener   http-listener                 None
+```
+
+3. Set up Webhook invocation in GitHub, under the settings tab of the cloned repo:
+
+![GitHub Webhook Setup](/assets/webhook.png)
 
 ### Sample Post Call
 
