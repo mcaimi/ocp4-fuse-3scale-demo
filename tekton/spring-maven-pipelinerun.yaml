@@ -22,6 +22,8 @@ spec:
       value: "jenkins-nexus:redhat123"
     - name: templatePath
       value: "dev"
+    - name: dockerfilePath
+      value: "java-runner"
   workspaces:
   - name: spring-maven-repo
     persistentVolumeClaim:

@@ -1,0 +1,34 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: hadolint-task
+spec:
+  workspaces:
+  - name: maven-repo
+  inputs:
+    params:
+    - name: dockerfilePath
+      type: string
+      default: "java-runner"
+    resources:
+    - name: source
+      type: git
+  steps:
+    - name: hadolint-check
+      image: docker.io/hadolint/hadolint:latest-debian
+      workingDir: /workspace/source
+      command: ["hadolint"]
+      args:
+        - '--config'
+        - '/tmp/hadolint.yaml'
+        - "$(inputs.params.dockerfilePath)/Dockerfile"
+      volumeMounts:
+        - mountPath: /tmp/
+          name: hadolint-cm
+  volumes:
+    - name: hadolint-cm
+      configMap:
+        name: hadolint-config-cm
+        items:
+          - key: "hadolint.yaml"
+            path: "hadolint.yaml"

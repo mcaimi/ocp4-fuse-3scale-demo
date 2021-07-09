@@ -26,6 +26,10 @@ spec:
         type: string
         description: Credentials to use when authenticating on Nexus
         default: "jenkins-nexus:redhat123"
+      - name: dockerfilePath
+        type: string
+        description: Relative path under which the Dockerfile is located
+        default: "java-runner"
   outputs:
     resources:
       - name: image
@@ -33,7 +37,7 @@ spec:
   steps:
     - name: buildah-build
       image: quay.io/buildah/stable
-      workingdir: /workspace/source/java-runner
+      workingdir: /workspace/source/$(params.dockerfilePath)
       command: ['buildah', 'bud',  '--build-arg','nexus_repo_url=$(params.nexus_url)', '--build-arg', 'artifact_name=$(params.artifact_id)', '--build-arg', 'nexus_auth=$(params.credentials)', '--tls-verify=$(inputs.params.TLS_VERIFY)', '--layers', '-f', 'Dockerfile', '-t', '$(outputs.resources.image.url)', '.']
       volumeMounts:
         - name: varlibcontainers

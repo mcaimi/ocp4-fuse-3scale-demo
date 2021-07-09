@@ -27,6 +27,10 @@ spec:
       type: string
       description: Namespace where deployment will occur
       default: "fuse-demo"
+    - name: dockerfilePath
+      type: string
+      description: Path containing the Dockerfile for the final image
+      default: "java-runner"
   tasks:
   - name: build
     taskRef:
@@ -99,6 +103,20 @@ spec:
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
+  - name: dockerfile-linting
+    taskRef:
+      name: hadolint-task
+    runAfter: ["upload-artifact"]
+    resources:
+      inputs:
+      - name: source
+        resource: fuse-demo-github
+    params:
+    - name: dockerfilePath
+      value: "java-runner"
+    workspaces:
+    - name: maven-repo
+      workspace: spring-maven-repo
   - name: build-runnable-image
     taskRef:
       name: spring-build-task
@@ -112,6 +130,8 @@ spec:
         value: "$(params.credentials)"
       - name: TLS_VERIFY
         value: "false"
+      - name: dockerfilePath
+        value: "java-runner"
     resources:
       inputs:
       - name: source
