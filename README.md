@@ -44,7 +44,9 @@ $ oc new-project fuse-demo
 2. Install tekton pipeline components:
 
 ```bash
-for i in pipeline-resources spring-build-pvc spring-build-task kustomize-deployment-task spring-maven-task spring-nexus-tasl spring-maven-pipeline; do
+oc create cm hadolint-config-cm --from-file=hadolint.yaml=conf/hadolint.yaml
+
+for i in pipeline-resources spring-build-pvc hadolint-task spring-build-task kustomize-deployment-task spring-maven-task spring-nexus-tasl spring-maven-pipeline; do
   oc create -f tekton/$i.yaml
 done
 ```
@@ -78,6 +80,7 @@ spring-fuse-demo-github   <none>   fuse.apps.kubernetes.local             80    
 ```
 
 ### Sample Post Call
+
 linux# ``wget --post-data '{"userId":7, "title":"This is a title", "body":"Blah"}' --header 'content-type:application/json' http://fuse.apps.kubernetes.local/camel/api/process``
 
 PS> ``wget -Method Post -Body '{"userId":7, "title":"This is a title", "body":"Blah"}' -ContentType 'application/json' http://fuse.apps.kubernetes.local/camel/api/process``
