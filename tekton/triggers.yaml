@@ -1,0 +1,77 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: fuse-demo-pipeline-template
+spec:
+  params:
+  - name: git-repo-url
+    description: The git repository url
+  - name: git-revision
+    description: The git revision
+    default: pipelines-1.4
+  - name: git-repo-name
+    description: The name of the deployment to be created / patched
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: fuse-demo-pipelinerun-$(tt.params.git-repo-name)-
+    spec:
+      serviceAccountName: pipeline
+      pipelineRef:
+        name: spring-maven-pipeline
+      resources:
+      - name: fuse-demo-github
+        resourceRef:
+          name: fuse-demo-github-repo
+      - name: output-runnable-image
+        resourceRef:
+          name: fuse-demo-image
+      params:
+        - name: artifact_id
+          value: "com.redhat:fuse-demo:1.0.0-SNAPSHOT"
+        - name: nexus_url
+          value: "nexus.apps.cluster-5698.sandbox539.opentlc.com"
+        - name: credentials
+          value: "jenkins-nexus:redhat123"
+        - name: templatePath
+          value: "dev"
+        - name: dockerfilePath
+          value: "java-runner"
+      workspaces:
+        - name: spring-maven-repo
+          persistentVolumeClaim:
+            claimName: spring-maven-repo-pvc
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: fuse-demo-pipeline-binding
+spec:
+  params:
+  - name: git-repo-url
+    value: $(body.repository.url)
+  - name: git-repo-name
+    value: $(body.repository.name)
+  - name: git-revision
+    value: $(body.head_commit.id)
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: fuse-demo-trigger
+spec:
+  serviceAccountName: pipeline
+  bindings:
+    - ref: fuse-demo-pipeline-binding
+  template:
+    name: fuse-demo-pipeline-template
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: fuse-demo-event-listener
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - triggerRef: fuse-demo-trigger
