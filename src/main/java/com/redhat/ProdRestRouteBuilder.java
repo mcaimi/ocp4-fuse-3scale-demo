@@ -12,11 +12,13 @@ import org.apache.camel.model.rest.RestBindingMode;
 import org.apache.camel.util.toolbox.AggregationStrategies;
 import org.apache.camel.util.toolbox.FlexibleAggregationStrategy;
 import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Profile;
 
 import com.redhat.db.PostEntity;
 
 @Component
-public class RestRouteBuilder extends RouteBuilder {
+@Profile("!test")
+public class ProdRestRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() {
@@ -27,14 +29,6 @@ public class RestRouteBuilder extends RouteBuilder {
                 .setBody().constant("Invalid request")
                 .marshal().json(JsonLibrary.Jackson)
                 .stop();
-
-        from("timer://test?repeatCount=1")
-                .setBody(simple("CREATE TABLE post_entity (user_id INTEGER NOT NULL, body VARCHAR(255), title VARCHAR(255), created TIMESTAMP DEFAULT CURRENT_TIMESTAMP())"))
-                .log("------------------------------")
-                .log("CREATE : ${body}")
-                .log("------------------------------")
-                .to("jdbc:datasource")
-                .log("Table created.");
 
         restConfiguration()
                 .enableCORS(true)
