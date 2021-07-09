@@ -91,9 +91,16 @@ If you no longer need the example, you can just run
 
 ```bash
 $ oc delete -k deployments/fuse-demo
+$ oc delete -k deployments/fuse-postgres
 ```
 
 ## TODO
 
-1. Add backing database to the deployment
-2. Fix bugs here and there
+1. Fix bugs here and there
+
+## Related repositories
+
+- [Kubernetes/OCP Demo Application](https://github.com/mcaimi/k8s-demo-app): for some Dockerfiles, Jenkins deployment, Nexus & SonarQube deployments
+- [OCP4 Component Deployment via ArgoCD](https://github.com/mcaimi/ocp4-argocd): for deployment manifests of Openshift Logging and User Workload Monitoring
+- [Custom Agents](https://hub.docker.com/u/mcaimi): pre-built container images used in some tekton tasks
+
