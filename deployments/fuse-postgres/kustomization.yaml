@@ -1,0 +1,31 @@
+bases:
+  - ../postgres-common
+namespace: fuse-demo
+namePrefix: spring-
+nameSuffix: "-github"
+commonLabels:
+  app: spring-postgres-app
+commonAnnotations:
+  deployedBy: "kustomize"
+  chain: "devops-pipeline"
+  environment: "noprod"
+patchesStrategicMerge:
+- storageclass.yaml
+- mem-sizing.yaml
+images:
+- name: postgres
+  newName: docker.io/library/postgres
+  newTag: latest
+secretGenerator:
+- name: postgres-init-secret
+  literals:
+  - postgres_password=P0stgr3s
+  - postgres_db_name=pgdev_db
+  - postgres_user_name=pgdev
+  - postgres_app_user=dev_user
+  - postgres_app_db=dev_db
+  - postgres_app_user_password=hibernate
+configMapGenerator:
+- name: postgres-init-config
+  files:
+    - postgres-init-db.sh
