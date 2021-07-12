@@ -34,8 +34,8 @@ spec:
           value: "nexus.apps.cluster-5698.sandbox539.opentlc.com"
         - name: credentials
           value: "jenkins-nexus:redhat123"
-        - name: templatePath
-          value: "dev"
+        - name: deploymentNamespace
+          value: "fuse-demo"
         - name: dockerfilePath
           value: "java-runner"
       workspaces:

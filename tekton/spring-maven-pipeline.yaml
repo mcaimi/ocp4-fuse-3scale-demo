@@ -147,6 +147,8 @@ spec:
       name: kustomize-deployment-task
     runAfter: ["build-runnable-image"]
     params:
+      - name: templatePath
+        value: "fuse-demo"
       - name: deploymentNamespace
         value: "$(params.deploymentNamespace)"
     resources:
@@ -166,8 +168,10 @@ spec:
           - name: postgresLabel
             value: "app=spring-postgres-app"
     params:
-      - name: deploymentNamespace
+      - name: templatePath
         value: "fuse-postgres"
+      - name: deploymentNamespace
+        value: "$(params.deploymentNamespace)"
     resources:
       inputs:
         - name: source
