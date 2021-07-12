@@ -116,9 +116,9 @@ el-fuse-demo-event-listener   el-fuse-demo-event-listener-fuse-demo.apps.cluster
 
 ### Sample Post Call
 
-linux# ``wget --post-data '{"userId":7, "title":"This is a title", "body":"Blah"}' --header 'content-type:application/json' http://fuse.apps.kubernetes.local/camel/api/process``
+linux# ``wget --post-data '{"userId":7, "title":"This is a title", "body":"Blah"}' --header 'content-type:application/json' http://fuse.apps.kubernetes.local/camel/api/post``
 
-PS> ``wget -Method Post -Body '{"userId":7, "title":"This is a title", "body":"Blah"}' -ContentType 'application/json' http://fuse.apps.kubernetes.local/camel/api/process``
+PS> ``wget -Method Post -Body '{"userId":7, "title":"This is a title", "body":"Blah"}' -ContentType 'application/json' http://fuse.apps.kubernetes.local/camel/api/post``
 
 ### Cleaning up
 
