@@ -9,7 +9,7 @@ metadata:
 spec:
   endpoints:
   - interval: 5s
-    path: /q/metrics
+    path: /actuator/prometheus
     port: 80-tcp
     scheme: http
   selector:
