@@ -78,7 +78,7 @@ public class DevRestRouteBuilder extends RouteBuilder {
                 .log("SELECT")
                 .log("------------------------------")
                 .setBody(constant("select * from post_entity"))
-                .to("jdbc:dataSource")
+                .to("jdbc:datasource")
                 .split(body()).aggregationStrategy(AggregationStrategies.groupedBody())
                     .process(exchange -> {
                         @SuppressWarnings("unchecked")
