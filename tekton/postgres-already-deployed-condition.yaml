@@ -10,4 +10,4 @@ spec:
       default: "app=spring-postgres-app"
   check:
     image: docker.io/mcaimi/jenkins-agent-maven:jdk8
-    script: 'test ! `oc get deployment -l app=$(params.postgresLabel) 2>&1 | grep -iv "No resources" |wc -l` -ne 0'
+    script: 'test ! `oc get deployment -l $(params.postgresLabel) 2>&1 | grep -iv "No resources" |wc -l` -ne 0'
