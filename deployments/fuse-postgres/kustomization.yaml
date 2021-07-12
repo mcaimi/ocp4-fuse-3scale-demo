@@ -22,9 +22,9 @@ secretGenerator:
   - postgres_password=P0stgr3s
   - postgres_db_name=pgdev_db
   - postgres_user_name=pgdev
-  - postgres_app_user=dev_user
-  - postgres_app_db=dev_db
-  - postgres_app_user_password=hibernate
+  - postgres_app_user=fuse
+  - postgres_app_db=fuse_db
+  - postgres_app_user_password=fuse123
 configMapGenerator:
 - name: postgres-init-config
   files:

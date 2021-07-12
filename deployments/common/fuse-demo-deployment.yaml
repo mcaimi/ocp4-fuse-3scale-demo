@@ -17,6 +17,37 @@ spec:
       - image: fuse-demo
         imagePullPolicy: Always
         name: ocp-fuse-demo
+        env:
+          - name: DBUSER
+            valueFrom:
+              secretKeyRef:
+                name: fuse-demo-init-secret
+                key: postgres_app_user
+          - name: DBPASS
+            valueFrom:
+              secretKeyRef:
+                name: fuse-demo-init-secret
+                key: postgres_app_user_password
+          - name: DBKIND
+            valueFrom:
+              secretKeyRef:
+                name: fuse-demo-init-secret
+                key: db_driver
+          - name: DBHOST
+            valueFrom:
+              secretKeyRef:
+                name: fuse-demo-init-secret
+                key: db_hostname
+          - name: DBPORT
+            valueFrom:
+              secretKeyRef:
+                name: fuse-demo-init-secret
+                key: db_port
+          - name: DBNAME
+            valueFrom:
+              secretKeyRef:
+                name: fuse-demo-init-secret
+                key: postgres_app_db
         ports:
         - containerPort: 8080
           protocol: TCP
