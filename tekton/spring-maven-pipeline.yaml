@@ -71,7 +71,7 @@ spec:
         resource: fuse-demo-github
     params:
     - name: GOALS
-      value: ["jacoco:report"]
+      value: ["verify", "jacoco:report"]
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
