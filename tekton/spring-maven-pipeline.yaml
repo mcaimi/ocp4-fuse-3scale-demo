@@ -41,10 +41,11 @@ spec:
         resource: fuse-demo-github
     params:
     - name: GOALS
-      value: ["compile"]
+      value: ["-DskipTests=true", "compile"]
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
+
   - name: verify
     taskRef:
       name: spring-maven-task
@@ -59,6 +60,7 @@ spec:
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
+
   - name: jacoco
     taskRef:
       name: spring-maven-task
@@ -73,6 +75,7 @@ spec:
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
+
   - name: package
     taskRef:
       name: spring-maven-task
@@ -83,10 +86,11 @@ spec:
         resource: fuse-demo-github
     params:
     - name: GOALS
-      value: ["package"]
+      value: ["-DskipTests=true", "package"]
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
+
   - name: upload-artifact
     taskRef:
       name: spring-nexus-task
@@ -103,6 +107,7 @@ spec:
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
+
   - name: dockerfile-linting
     taskRef:
       name: hadolint-task
@@ -117,6 +122,7 @@ spec:
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
+
   - name: build-runnable-image
     taskRef:
       name: spring-build-task
@@ -142,6 +148,7 @@ spec:
     workspaces:
     - name: maven-repo
       workspace: spring-maven-repo
+
   - name: deploy-app
     taskRef:
       name: kustomize-deployment-task
@@ -158,6 +165,7 @@ spec:
     workspaces:
       - name: maven-repo
         workspace: spring-maven-repo
+
   - name: deploy-database
     taskRef:
       name: kustomize-deployment-task
