@@ -1,4 +1,4 @@
 junk
 target
 .mvn
-*.sh
+local-*.sh
