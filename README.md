@@ -46,7 +46,7 @@ $ oc new-project fuse-demo
 ```bash
 oc create cm hadolint-config-cm --from-file=hadolint.yaml=conf/hadolint.yaml -n fuse-demo
 
-for i in pipeline-resources spring-build-pvc hadolint-task spring-build-task kustomize-deployment-task spring-maven-task spring-nexus-tasl spring-maven-pipeline; do
+for i in pipeline-resources spring-build-pvc hadolint-task spring-build-task kustomize-deployment-task spring-maven-task spring-nexus-task postgres-already-deployed-condition spring-maven-pipeline; do
   oc create -f tekton/$i.yaml -n fuse-demo
 done
 ```
@@ -107,7 +107,7 @@ $ oc expose svc el-fuse-demo-event-listener -n fuse-demo
 
 $ oc get routes -n fuse-demo
 NAME                          HOST/PORT                                                                        PATH   SERVICES                      PORT            TERMINATION   WILDCARD
-el-fuse-demo-event-listener   el-fuse-demo-event-listener-fuse-demo.apps.cluster-5698.sandbox539.opentlc.com          el-fuse-demo-event-listener   http-listener                 None
+el-fuse-demo-event-listener   el-fuse-demo-event-listener-fuse-demo.apps.lab01.gpslab.club          el-fuse-demo-event-listener   http-listener                 None
 ```
 
 3. Set up Webhook invocation in GitHub, under the settings tab of the cloned repo:
@@ -127,6 +127,22 @@ If you no longer need the example, you can just run
 ```bash
 $ oc delete -k deployments/fuse-demo
 $ oc delete -k deployments/fuse-postgres
+```
+
+## ADDITIONAL CONFIGURATION
+
+Depending on cluster setup and administrator policies, the 'pipeline' serviceaccount may need further permissions to run this demo:
+
+1. Add the 'privileged' scc to the service account. This is needed because otherwise the buildah pod that runs the build task will fail.
+
+```bash
+$ oc adm add-scc-to-user privileged -z system:serviceaccount:fuse-demo:pipeline
+```
+
+2. Grant the monitoring-edit role to the service account. This is needed to allow the SA to create/destroy ServiceMonitor objects.
+
+```bash
+$ oc adm policy add-role-to-user monitoring-edit system:serviceaccount:fuse-demo:pipeline  -n fuse-demo
 ```
 
 ## TODO
