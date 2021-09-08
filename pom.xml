@@ -31,12 +31,12 @@
     <snapshotRepository>
       <id>nexus-snapshots</id>
       <name>Sonatype On Openshift 4</name>
-      <url>http://nexus.apps.cluster-5698.sandbox539.opentlc.com/repository/maven-snapshots/</url>
+      <url>http://nexus.apps.lab01.gpslab.club/repository/maven-snapshots/</url>
     </snapshotRepository>
     <repository>
       <id>nexus-release</id>
       <name>Sonatype On Openshift 4</name>
-      <url>http://nexus.apps.cluster-5698.sandbox539.opentlc.com/repository/maven-releases/</url>
+      <url>http://nexus.apps.lab01.gpslab.club/repository/maven-releases/</url>
     </repository>
   </distributionManagement>
 

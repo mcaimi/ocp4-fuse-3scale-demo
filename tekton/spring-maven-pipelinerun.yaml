@@ -17,7 +17,7 @@ spec:
     - name: artifact_id
       value: "com.redhat:fuse-demo:1.0.0-SNAPSHOT"
     - name: nexus_url
-      value: "nexus.apps.cluster-5698.sandbox539.opentlc.com"
+      value: "nexus.apps.lab01.gpslab.club"
     - name: credentials
       value: "jenkins-nexus:redhat123"
     - name: deploymentNamespace
