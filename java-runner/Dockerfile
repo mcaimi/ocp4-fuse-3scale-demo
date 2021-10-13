@@ -11,7 +11,7 @@ USER root
 COPY scripts/nexus-fetch.py /usr/local/bin/nexus-fetch
 RUN chmod +x /usr/local/bin/nexus-fetch &&\
     dnf install -y shadow-utils python39 python39-requests &&\
-    mkdir -p /var/lib/deploy && /usr/local/bin/nexus-fetch -r ${nexus_repo_url} -a ${artifact_name} -d /var/lib/deploy -c ${nexus_auth} 
+    mkdir -p /var/lib/deploy && /usr/local/bin/nexus-fetch -r ${nexus_repo_url} -a ${artifact_name} -d /var/lib/deploy -c ${nexus_auth}
 
 # Copy server config so springBootUtility can be downloaded by featureUtility in the next step
 COPY --chown=1001:0 server.xml /config/server.xml
@@ -19,9 +19,8 @@ COPY --chown=1001:0 server.xml /config/server.xml
 # This script will add the requested XML snippets to enable Liberty features and grow image to be fit-for-purpose using featureUtility
 RUN features.sh
 
-COPY --chown=1001:0 /var/lib/deploy/runner.jar /staging/myFatApp.jar
-
-RUN springBootUtility thin \
+RUN mkdir -p /staging && cp /var/lib/deploy/runner.jar /staging/myFatApp.jar && chown -R 1001:0 /staging &&\
+  springBootUtility thin \
  --sourceAppPath=/staging/myFatApp.jar \
  --targetThinAppPath=/staging/myThinApp.jar \
  --targetLibCachePath=/staging/lib.index.cache
