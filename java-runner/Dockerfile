@@ -14,7 +14,7 @@ ARG gid=1001
 USER root
 COPY scripts/nexus-fetch.py /usr/local/bin/nexus-fetch
 RUN chmod +x /usr/local/bin/nexus-fetch &&\
-    dnf install -y python39 python39-requests &&\
+    dnf install -y shadow-utils python39 python39-requests &&\
     mkdir -p /var/lib/deploy && /usr/local/bin/nexus-fetch -r ${nexus_repo_url} -a ${artifact_name} -d /var/lib/deploy -c ${nexus_auth} &&\
     groupadd -g ${gid} ${group} && useradd -l -c "Java Runner User" -d /home/${user} -u ${uid} -g ${gid} -m ${user}
 
