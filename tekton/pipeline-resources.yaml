@@ -18,3 +18,5 @@ spec:
   params:
   - name: url
     value: https://github.com/mcaimi/ocp4-tekton-demo
+  - name: revision
+    value: main
