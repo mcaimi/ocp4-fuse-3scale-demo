@@ -13,8 +13,8 @@
     <!-- To allow access to this server from a remote client host="*" has been added to the following element -->
     <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
-                  httpPort="9080"
-                  httpsPort="9443" />
+                  httpPort="8080"
+                  httpsPort="8443" />
 
 </server>
 
