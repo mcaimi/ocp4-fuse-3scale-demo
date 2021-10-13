@@ -9,7 +9,7 @@ spec:
   resources:
   - name: fuse-demo-github
     resourceRef:
-      name: fuse-demo-github-repo
+      name: fuse-demo-github-repo-openliberty
   - name: output-runnable-image
     resourceRef:
       name: fuse-demo-image

@@ -19,4 +19,16 @@ spec:
   - name: url
     value: https://github.com/mcaimi/ocp4-tekton-demo
   - name: revision
+    value: main
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: fuse-demo-github-repo-openliberty
+spec:
+  type: git
+  params:
+  - name: url
+    value: https://github.com/mcaimi/ocp4-tekton-demo
+  - name: revision
     value: openliberty
