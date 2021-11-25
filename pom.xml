@@ -6,13 +6,13 @@
   <artifactId>fuse-demo</artifactId>
   <description>Camel Rest and JDBC Demo</description>
   <version>1.0.0-SNAPSHOT</version>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <jacoco.version>0.8.6</jacoco.version>
-
-    <!-- configure the Fuse version you want to use here -->
+    <jacoco.version>0.8.7</jacoco.version>
     <fuse.bom.version>7.8.0.fuse-sb2-780038-redhat-00001</fuse.bom.version>
+    <start-class>com.redhat.Application</start-class>
   </properties>
 
   <dependencyManagement>
@@ -40,17 +40,26 @@
     </repository>
   </distributionManagement>
 
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.5.6</version>
+  </parent>
+
   <dependencies>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-test-spring</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
@@ -62,61 +71,74 @@
           </exclusion>
       </exclusions>
     </dependency>
+
     <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-actuator</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
+
     <dependency>
-        <groupId>io.micrometer</groupId>
-        <artifactId>micrometer-core</artifactId>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+    </dependency>
+
     <dependency>
         <groupId>io.micrometer</groupId>
         <artifactId>micrometer-registry-prometheus</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-micrometer-starter</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <scope>runtime</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-spring-boot-starter</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <exclusions>
+      <!--      <exclusions>
         <exclusion>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-starter-tomcat</artifactId>
         </exclusion>
-      </exclusions>
+      </exclusions> -->
     </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-undertow</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-jackson-starter</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-servlet-starter</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-swagger-java-starter</artifactId>
     </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-http-starter</artifactId>
-        </dependency>
+
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-http-starter</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
@@ -132,15 +154,18 @@
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
     </dependency>
+
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
     </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-jdbc-starter</artifactId>
@@ -150,34 +175,27 @@
   <build>
     <defaultGoal>spring-boot:run</defaultGoal>
 
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>3.0.0-M1</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-
     <plugins>
+      <!-- Enable Liberty Maven plugin -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>3.0.0-M1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <groupId>io.openliberty.tools</groupId>
+        <artifactId>liberty-maven-plugin</artifactId>
+        <version>3.3.4</version>
         <configuration>
-          <source>11</source>
-          <target>11</target>
+          <appsDirectory>apps</appsDirectory>
+          <installAppPackages>spring-boot-project</installAppPackages>
         </configuration>
       </plugin>
+      <!-- End of Liberty Maven plugin -->
+
       <plugin>
-        <groupId>org.jboss.redhat-fuse</groupId>
+        <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.5.6</version>
+        <configuration>
+            <mainClass>${start-class}</mainClass>
+          <layout>ZIP</layout>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -185,9 +203,19 @@
             </goals>
           </execution>
         </executions>
-        <version>${fuse.bom.version}</version>
       </plugin>
+
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
+        </configuration>
+      </plugin>
+
+     <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>${jacoco.version}</version>
@@ -210,7 +238,8 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+     </plugin>
+
     </plugins>
 
   </build>
@@ -220,12 +249,20 @@
       <id>redhat-ga</id>
       <url>https://maven.repository.redhat.com/ga</url>
     </repository>
+    <repository>
+      <id>mavendotorg</id>
+      <url>https://repo1.maven.org/maven2</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
     <pluginRepository>
       <id>redhat-ga</id>
       <url>https://maven.repository.redhat.com/ga</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>mavendotorg</id>
+      <url>https://repo1.maven.org/maven2</url>
     </pluginRepository>
   </pluginRepositories>
 
