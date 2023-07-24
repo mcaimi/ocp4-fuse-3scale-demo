@@ -10,11 +10,15 @@ spec:
       app: postgres
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
         app: postgres
     spec:
+      serviceAccountName: postgres-sa
+      automountServiceAccountToken: true
       containers:
-      - image: docker.io/library/postgres:latest
+      - image: postgres
         imagePullPolicy: Always
         name: postgres
         env:

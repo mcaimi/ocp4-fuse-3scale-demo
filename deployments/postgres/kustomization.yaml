@@ -1,0 +1,32 @@
+bases:
+  - ./postgres-base
+namespace: fuse-jdbc-demo
+namePrefix: backend-
+nameSuffix: "-v1-community"
+commonLabels:
+  app: k8s-postgres-app
+  version: v1-community
+commonAnnotations:
+  deployedBy: "oc-kustomize"
+  chain: "tekton-pipeline"
+  environment: "fuse-jdbc-demo"
+patchesStrategicMerge:
+- storageclass.yaml
+- mem-sizing.yaml
+images:
+- name: postgres
+  newName: quay.io/marcocaimi/docker-postgres
+  newTag: latest
+secretGenerator:
+- name: postgres-init-secret
+  literals:
+  - postgres_password=P0stgr3s
+  - postgres_db_name=pg_prod
+  - postgres_user_name=pgprod
+  - postgres_app_user=prod_user
+  - postgres_app_db=prod_db
+  - postgres_app_user_password=hibernate
+configMapGenerator:
+- name: postgres-init-config
+  files:
+    - postgres-init-db.sh

@@ -6,11 +6,11 @@ metadata:
 spec:
   ports:
   - port: 5432
-    name: postgres-1
+    name: tcp-postgres1
     protocol: TCP
     targetPort: 5432
   - port: 5433
-    name: postgres-2
+    name: tcp-postgres2
     protocol: TCP
     targetPort: 5433
   selector:
