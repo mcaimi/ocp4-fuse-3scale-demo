@@ -4,15 +4,15 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.redhat</groupId>
   <artifactId>fuse-demo</artifactId>
-  <description>Camel Rest and JDBC Demo</description>
+  <description>RedHat Fuse REST + JDBC Demo</description>
   <version>1.0.0-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <jacoco.version>0.8.7</jacoco.version>
+    <jacoco.version>0.8.10</jacoco.version>
 
     <!-- configure the Fuse version you want to use here -->
-    <fuse.bom.version>7.8.0.fuse-sb2-780038-redhat-00001</fuse.bom.version>
+    <fuse.bom.version>7.12.0.fuse-7_12_0-00016-redhat-00001</fuse.bom.version>
   </properties>
 
   <dependencyManagement>
@@ -26,19 +26,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>nexus-snapshots</id>
-      <name>Sonatype On Openshift 4</name>
-      <url>http://nexus.apps.lab01.gpslab.club/repository/maven-snapshots/</url>
-    </snapshotRepository>
-    <repository>
-      <id>nexus-release</id>
-      <name>Sonatype On Openshift 4</name>
-      <url>http://nexus.apps.lab01.gpslab.club/repository/maven-releases/</url>
-    </repository>
-  </distributionManagement>
 
   <dependencies>
     <dependency>
@@ -154,7 +141,7 @@
      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.11.0</version>
         <configuration>
           <source>11</source>
           <target>11</target>
