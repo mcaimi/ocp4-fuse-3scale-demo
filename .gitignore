@@ -2,3 +2,5 @@ junk
 target
 .mvn
 local-*.sh
+.DS_Store
+.vscode/*
