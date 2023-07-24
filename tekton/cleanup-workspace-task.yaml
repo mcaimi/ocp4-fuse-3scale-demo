@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: cleanup-workspace
+spec:
+  workspaces:
+    - name: maven-repo
+      mountPath: /workspace/source
+  steps:
+    - name: cleanup-workspace
+      image: gcr.io/cloud-builders/mvn
+      script: |
+        rm -rf $(workspaces.maven-repo.path)/*
+        rm -rf $(workspaces.maven-repo.path)/.[!.]*

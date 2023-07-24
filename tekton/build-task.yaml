@@ -1,0 +1,46 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-task
+spec:
+  workspaces:
+    - name: maven-repo
+      mountPath: /workspace/source
+  params:
+    - name: TLS_VERIFY
+      description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS registry)
+      default: "false"
+      type: string
+    - name: dockerfilePath
+      type: string
+      description: Relative path under which the Dockerfile is located
+      default: "src/main/docker"
+    - name: image-name
+      type: string
+      default: image-registry.openshift-image-registry.svc:5000/fuse-jdbc-demo/fuse-jdbc-demo
+
+  steps:
+    - name: buildah-build
+      image: quay.io/buildah/stable
+      resources: {}
+      workingDir: /workspace/source
+      command: ['buildah', 'bud',  '--tls-verify=$(inputs.params.TLS_VERIFY)', '--layers', '-f', '$(inputs.params.dockerfilePath)/Dockerfile.jvm', '-t', '$(inputs.params.image-name)', '.']
+      volumeMounts:
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
+      securityContext:
+        privileged: true
+
+    - name: buildah-push
+      image: quay.io/buildah/stable
+      resources: {}
+      command: ['buildah', 'push', '--tls-verify=$(inputs.params.TLS_VERIFY)', '$(inputs.params.image-name)', 'docker://$(inputs.params.image-name)']
+      volumeMounts:
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
+      securityContext:
+        privileged: true
+  volumes:
+    - name: varlibcontainers
+      emptyDir: {}
+

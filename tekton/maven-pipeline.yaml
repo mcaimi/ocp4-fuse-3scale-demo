@@ -1,0 +1,103 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: fuse-spring-maven-pipeline
+spec:
+  workspaces:
+  - name: maven-repo
+
+  params:
+    - name: dockerfilePath
+      type: string
+      description: Path containing the Dockerfile for the final image
+      default: "src/main/docker"
+    - name: git-url
+      type: string
+      description: "Upstream Source Repository Url"
+    - name: git-revision
+      type: string
+      description: "Upstream source code revision to pull"
+    - name: image-name
+      type: string
+      description: "Target OCI image name"
+
+  tasks:
+  - name: clone
+    taskRef:
+      kind: ClusterTask
+      name: git-clone
+    params:
+      - name: url
+        value: $(params.git-url)
+      - name: revision
+        value: $(params.git-revision)
+    workspaces:
+    - name: output
+      workspace: maven-repo
+
+  - name: build
+    taskRef:
+      name: maven-task
+    runAfter: ["clone"]
+    params:
+    - name: GOALS
+      value: ["-Dmaven.repo.local=$(workspaces.maven-repo.path)", "-DskipTests=true", "compile"]
+    workspaces:
+    - name: maven-repo
+      workspace: maven-repo
+
+  - name: test
+    taskRef:
+      name: maven-task
+    runAfter: ["build"]
+    params:
+    - name: GOALS
+      value: ["-Dmaven.repo.local=$(workspaces.maven-repo.path)", "test"]
+    workspaces:
+    - name: maven-repo
+      workspace: maven-repo
+
+  - name: jacoco
+    taskRef:
+      name: maven-task
+    runAfter: ["test"]
+    params:
+    - name: GOALS
+      value: ["-Dmaven.repo.local=$(workspaces.maven-repo.path)", "jacoco:report"]
+    workspaces:
+    - name: maven-repo
+      workspace: maven-repo
+
+  - name: package
+    taskRef:
+      name: maven-task
+    runAfter: ["test"]
+    params:
+    - name: GOALS
+      value: ["-Dmaven.repo.local=$(workspaces.maven-repo.path)", "-DskipTests=true", "package"]
+    workspaces:
+    - name: maven-repo
+      workspace: maven-repo
+
+  - name: build-container-image
+    taskRef:
+      name: build-task
+    runAfter: ["package"]
+    params:
+      - name: TLS_VERIFY
+        value: "false"
+      - name: dockerfilePath
+        value: "src/main/docker"
+      - name: image-name
+        value: $(params.image-name)
+    workspaces:
+    - name: maven-repo
+      workspace: maven-repo
+
+  finally:
+  - name: clean-workspace
+    taskRef:
+      name: cleanup-workspace
+    workspaces:
+    - name: maven-repo
+      workspace: maven-repo

@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: fuse-jdbc-demo
+    argocd.argoproj.io/managed-by: openshift-gitops
+  name: fuse-jdbc-demo
+
