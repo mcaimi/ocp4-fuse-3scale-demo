@@ -1,0 +1,34 @@
+bases:
+  - ./common
+namespace: fuse-jdbc-demo
+namePrefix: fuse-spring-
+nameSuffix: "-v1"
+commonLabels:
+  app: fuse-jdbc-demo
+  version: v1
+commonAnnotations:
+  deployedBy: "argocd"
+  chain: "tekton-pipeline"
+  environment: "fuse-spring"
+  app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"backend-postgres-v1-community"}]'
+patchesStrategicMerge:
+- mem-sizing.yaml
+secretGenerator:
+- name: fuse-init-secret
+  literals:
+  - postgres_app_user=prod_user
+  - postgres_app_db=prod_db
+  - postgres_app_user_password=hibernate
+  - db_driver=postgresql
+  - db_hostname=backend-postgres-service-v1-community
+  - db_port=5432
+  - orm_log=true
+  - default_schema=prod_schema
+  - db_generation=none
+  - hibernate_load_file=no-file
+  - jdbc_max_size=8
+  - jdbc_min_size=2
+images:
+- name: fuse-jdbc-demo
+  newName: image-registry.openshift-image-registry.svc:5000/fuse-jdbc-demo/fuse-jdbc-demo
+  newTag: latest

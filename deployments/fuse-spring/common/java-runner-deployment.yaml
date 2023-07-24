@@ -1,0 +1,89 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-runner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: java-runner
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: java-runner
+    spec:
+      serviceAccountName: java-runner-sa
+      automountServiceAccountToken: true
+      containers:
+      - image: fuse-jdbc-demo
+        imagePullPolicy: Always
+        name: k8s-java-runner
+        env:
+          - name: DBUSER
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: postgres_app_user
+          - name: DBPASS
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: postgres_app_user_password
+          - name: DBKIND
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: db_driver
+          - name: DBHOST
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: db_hostname
+          - name: DBPORT
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: db_port
+          - name: DBNAME
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: postgres_app_db
+          - name: ORM_LOG
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: orm_log
+          - name: DB_GENERATION
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: db_generation
+          - name: HIBERNATE_LOAD_FILE
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: hibernate_load_file
+          - name: JDBC_MAX_SIZE
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: jdbc_max_size
+          - name: JDBC_MIN_SIZE
+            valueFrom:
+              secretKeyRef:
+                name: fuse-init-secret
+                key: jdbc_min_size
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+

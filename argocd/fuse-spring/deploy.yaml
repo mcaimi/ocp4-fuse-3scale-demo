@@ -1,0 +1,19 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fuse-spring-app
+  namespace: openshift-gitops
+spec:
+  project: fuse-spring-app
+  source:
+    repoURL: https://github.com/mcaimi/ocp4-tekton-demo.git
+    targetRevision: main
+    path: deployments/fuse-spring
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-gitops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
