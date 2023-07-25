@@ -48,19 +48,16 @@ public class DevRestRouteBuilder extends RouteBuilder {
                 .component("servlet")
                 .bindingMode(RestBindingMode.json);
 
-        rest("/api/post")
-			.description("POST Service: Send data payload to the backend DB")
-	        .post()
+        rest("/api")
+	        .post("/post")
 	            .description("Insert New Data (Post Entry)")
+                .consumes("application/json")
 	            .type(PostEntity.class)
 	            .route()
 	            	.routeId("process-jdbc-insert")
 	                .to("direct:insert")
-	            .endRest();
-
-        rest("/api/get")
-            .description("GET Service: Get Posts Data from the backend DB")
-			.get()
+	            .endRest()
+			.get("/get")
 				.description("List available posts (Post Entries)")
 				.outType(PostEntity[].class)
 				.route()
@@ -69,31 +66,32 @@ public class DevRestRouteBuilder extends RouteBuilder {
 				.endRest();
 
         from("direct:insert")
-                .log("------------------------------")
-                .log("INSERT : ${body}")
-                .log("------------------------------")
-                .setBody(simple("INSERT INTO post_entity (user_id,body,title) VALUES (${body.userId},'${body.body}','${body.title}')"))
-                .to("jdbc:datasource")
-                .log("Entity successfully saved.");
+            .log("------------------------------")
+            .log("INSERT : ${body}")
+            .log("------------------------------")
+            .setBody(simple("INSERT INTO post_entity (user_id,body,title) VALUES (${body.userId},'${body.body}','${body.title}')"))
+            .to("jdbc:datasource")
+            .end()
+            .log("Entity successfully saved.");
 
         from("direct:select")
-                .log("------------------------------")
-                .log("SELECT")
-                .log("------------------------------")
-                .setBody(constant("select * from post_entity"))
-                .to("jdbc:datasource")
-                .split(body()).aggregationStrategy(AggregationStrategies.groupedBody())
-                    .process(exchange -> {
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> row = (Map<String, Object>) exchange.getIn().getBody();
-                        Integer userId = (Integer) row.get("USER_ID");
-                        String title = (String) row.get("TITLE");
-                        String body = (String) row.get("BODY");
-                        LocalDateTime created = ((Timestamp) row.get("CREATED")).toLocalDateTime();
-                        PostEntity entity = new PostEntity(userId, title, body, created);
-                        exchange.getMessage().setBody(entity);
-                    })
-                .end()
-                .log("Result as DTO : ${body}");
+            .log("------------------------------")
+            .log("SELECT")
+            .log("------------------------------")
+            .setBody(constant("select * from post_entity"))
+            .to("jdbc:datasource")
+            .split(body()).aggregationStrategy(AggregationStrategies.groupedBody())
+                .process(exchange -> {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> row = (Map<String, Object>) exchange.getIn().getBody();
+                    Integer userId = (Integer) row.get("USER_ID");
+                    String title = (String) row.get("TITLE");
+                    String body = (String) row.get("BODY");
+                    LocalDateTime created = ((Timestamp) row.get("CREATED")).toLocalDateTime();
+                    PostEntity entity = new PostEntity(userId, title, body, created);
+                    exchange.getMessage().setBody(entity);
+                })
+            .end()
+            .log("Result as DTO : ${body}");
     }
 }
