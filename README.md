@@ -69,7 +69,7 @@ spring-fuse-demo-github   <none>   fuse.apps.kubernetes.local             80    
 
 ### Sample Post Call
 
-linux# ``wget --post-data '{"userId":7, "title":"This is a title", "body":"Blah"}' --header 'content-type:application/json' http://fuse.apps.kubernetes.local/camel/api/post``
+linux# ``curl -d '{"userId":7, "title":"This is a title", "body":"Blah"}' -H "Content-Type: application/json" http://fuse.apps.kubernetes.local/camel/api/post``
 
 PS> ``wget -Method Post -Body '{"userId":7, "title":"This is a title", "body":"Blah"}' -ContentType 'application/json' http://fuse.apps.kubernetes.local/camel/api/post``
 
