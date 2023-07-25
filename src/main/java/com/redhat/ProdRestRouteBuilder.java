@@ -41,19 +41,22 @@ public class ProdRestRouteBuilder extends RouteBuilder {
                 .bindingMode(RestBindingMode.json);
 
         rest("/api/post")
-			.description("Posts service")
+			.description("POST Service: Send data payload to the backend DB")
 	        .post()
-	            .description("Inserts a new post")
+	            .description("Insert New Data (Post Entry)")
 	            .type(PostEntity.class)
 	            .route()
-	            	.routeId("api-process")
+	            	.routeId("process-jdbc-insert")
 	                .to("direct:insert")
-	            .endRest()
+	            .endRest();
+
+        rest("/api/get")
+            .description("GET Service: Get Posts Data from the backend DB")
 			.get()
-				.description("Lists available posts")
+				.description("List available posts (Post Entries)")
 				.outType(PostEntity[].class)
 				.route()
-					.routeId("post-select")
+					.routeId("process-jdbc-select")
 					.to("direct:select")
 				.endRest();
 
