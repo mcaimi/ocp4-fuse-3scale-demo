@@ -1,0 +1,39 @@
+---
+apiVersion: capabilities.3scale.net/v1beta1
+kind: Backend
+metadata:
+  name: fuse-jdbc-api-service
+  namespace: fuse-jdbc-demo
+spec:
+  providerAccountRef:
+    name: fuse-tenant-secret
+  name: Fuse-JDBC-Api-Service
+  privateBaseURL: >-
+    http://fuse-spring-java-runner-service-v1.fuse-jdbc-demo.svc.cluster.local/camel
+  systemName: fuse-backend
+  description: Fuse REST-to-JSBC API Service on K8s
+  metrics:
+    get_calls:
+      friendlyName: "GET Calls"
+      unit: "1"
+    post_calls:
+      friendlyName: "POST Calls"
+      unit: "1"
+    hits:
+      description: Number of API hits
+      friendlyName: Hits
+      unit: "hit"
+  methods:
+    get_method:
+      friendlyName: Fuse API GET Method Call
+    post_method:
+      friendlyName: Fuse API POST Method Call
+  mappingRules:
+    - httpMethod: GET
+      pattern: "/api/get"
+      increment: 1
+      metricMethodRef: get_calls
+    - httpMethod: POST
+      pattern: "/api/post"
+      increment: 1
+      metricMethodRef: post_calls

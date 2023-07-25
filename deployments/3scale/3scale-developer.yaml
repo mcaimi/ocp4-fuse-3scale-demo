@@ -1,0 +1,35 @@
+---
+kind: DeveloperAccount
+apiVersion: capabilities.3scale.net/v1beta1
+metadata:
+  name: fuse-developer-account
+  namespace: fuse-jdbc-demo
+spec:
+  orgName: Fuse-Spring
+  providerAccountRef:
+    name: fuse-tenant-secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: developer-admin-secret
+  namespace: fuse-jdbc-demo
+type: Opaque
+data:
+  password: cmVkaGF0MTIz
+---
+kind: DeveloperUser
+apiVersion: capabilities.3scale.net/v1beta1
+metadata:
+  name: fuse-developer-user
+  namespace: fuse-jdbc-demo
+spec:
+  developerAccountRef:
+    name: fuse-developer-account
+  email: dev@fuse-spring.com
+  passwordCredentialsRef:
+    name: developer-admin-secret
+  providerAccountRef:
+    name: fuse-tenant-secret
+  role: admin
+  username: developer
