@@ -52,31 +52,6 @@ spec:
               secretKeyRef:
                 name: fuse-init-secret
                 key: postgres_app_db
-          - name: ORM_LOG
-            valueFrom:
-              secretKeyRef:
-                name: fuse-init-secret
-                key: orm_log
-          - name: DB_GENERATION
-            valueFrom:
-              secretKeyRef:
-                name: fuse-init-secret
-                key: db_generation
-          - name: HIBERNATE_LOAD_FILE
-            valueFrom:
-              secretKeyRef:
-                name: fuse-init-secret
-                key: hibernate_load_file
-          - name: JDBC_MAX_SIZE
-            valueFrom:
-              secretKeyRef:
-                name: fuse-init-secret
-                key: jdbc_max_size
-          - name: JDBC_MIN_SIZE
-            valueFrom:
-              secretKeyRef:
-                name: fuse-init-secret
-                key: jdbc_min_size
         ports:
         - containerPort: 8080
           protocol: TCP
