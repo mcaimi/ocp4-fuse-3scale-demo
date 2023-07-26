@@ -38,16 +38,31 @@ spec:
   applicationPlans:
     fuseApiPlan:
       name: "Fuse to JDBC Rate Plan"
+      trialPeriod: 1
+      setupFee: "0.99"
+      pricingRules:
+        - from: 100
+          to: 300
+          pricePerUnit: "0.15"
+          metricMethodRef:
+            systemName: get_calls
+            backend: fuse-backend
+        - from: 100
+          to: 300
+          pricePerUnit: "0.15"
+          metricMethodRef:
+            systemName: post_calls
+            backend: fuse-backend
       limits:
         - period: month
           value: 600
           metricMethodRef:
-            systemName: hits
+            systemName: post_calls
             backend: fuse-backend
         - period: week
           value: 150
           metricMethodRef:
-            systemName: hits
+            systemName: get_calls
             backend: fuse-backend
   backendUsages:
     fuse-backend:
