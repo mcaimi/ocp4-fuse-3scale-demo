@@ -1,8 +1,0 @@
-apiVersion: operators.coreos.com/v1
-kind: OperatorGroup
-metadata:
-  name: sso-operatorgroup
-  namespace: fuse-jdbc-demo
-spec:
-  targetNamespaces:
-  - fuse-jdbc-demo
